@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>ArcGIS API for JavaScript Tutorials: Display a map</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.24/"></script>
+
+    <script>
+      require([
+        "esri/config",
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+      ], function (esriConfig, Map, MapView, FeatureLayer) {
+        esriConfig.apiKey =
+          "YOUR_API_KEY";
+
+        const map = new Map({
+          basemap: "arcgis-light-gray", // Basemap layer service
+        });
+
+        const view = new MapView({
+          map: map,
+          center: [-74.006, 40.7128], // Longitude, latitude
+          zoom: 15, // Zoom level
+          container: "viewDiv", // Div element
+        });
+
+        const popupTrailheads = {
+          title: "Coffee Shop",
+          content:
+            "<b>Name:</b> {Location_Name}<br><b>Address:</b> {Place_Address}<br><b>Cross Street:</b> {Phone}",
+        };
+
+        const trailheadsRenderer = {
+          type: "simple",
+          symbol: {
+            type: "picture-marker",
+            url: "data:image/png;base64,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",
+            width: "25px",
+            height: "25px",
+          },
+        };
+
+        const trailheads = new FeatureLayer({
+          url: "https://services7.arcgis.com/D3ldBDYkJEQ9Y4At/arcgis/rest/services/coffee_shops_in_nyc/FeatureServer/0",
+          renderer: trailheadsRenderer,
+          popupTemplate: popupTrailheads,
+          outFields: ["TRL_NAME", "CITY_JUR", "X_STREET", "PARKING", "ELEV_FT"],
+        });
+
+        map.add(trailheads);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
